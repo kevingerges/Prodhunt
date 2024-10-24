@@ -1,13 +1,20 @@
 #!/usr/bin/env python
 import sys
-from match_to_proposal.crew import MatchToProposalCrew
+import os
+import logging
+from crew import BusinessPlanCrew
+from agents import BusinessPlanAgents
 
+logging.basicConfig(level=logging.DEBUG)
 
 def run():
-    # Replace with your inputs, it will automatically interpolate any tasks and agents information
-    inputs = {
-        'path_to_jobs_csv': './src/match_to_proposal/data/jobs.csv',
-        'path_to_cv': './src/match_to_proposal/data/cv.md'
-    }
-    MatchToProposalCrew().crew().kickoff(inputs=inputs)
+    agents = BusinessPlanAgents()
+    print(f"Using LLM: {agents.market_research_agent.llm}")
+    print(f"LLM type: {type(agents.market_research_agent.llm)}")
+    print(f"LLM attributes: {vars(agents.market_research_agent.llm)}")
+    
+    inputs = {"business_idea": input("Enter your business idea: ")}
+    BusinessPlanCrew().crew().kickoff(inputs=inputs)
 
+if __name__ == "__main__":
+    run()

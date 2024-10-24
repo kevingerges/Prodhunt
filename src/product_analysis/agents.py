@@ -1,78 +1,37 @@
-from crewai import Agent, LLM
-from langchain_openai import ChatOpenAI
+from langchain_community.llms import Ollama
+from crewai import Agent
 
-class LLamaAgents:
+class BusinessPlanAgents:
     def __init__(self):
-        self.llama_agent = ChatOpenAI(
-            model="crewai-llama3:8b",
-            base_url="http://localhost:11434/v1", # modify
-            api_key="NA"
-        )
-    
-    def product_manager(self):
-        return self.llama_agent(
-            role="Product Manager",
-            # ...
-            llm=self.llama_agent
-        )
-    
-
-'''
-
-    # variables
-    model_name="llama3:8b"
-    custom_model_name="crewai-llama3"
-
-    # get the base model
-    ollama pull $model_name
-
-    # create the model file
-    ollama create $custom_model_name -f ./Modelfile
-
-
-'''
-
-class BusinessAnalystAgents:
-    def __init__(self):
-        # Configure the LLM with Ollama
-        llm = LLM(
-            model="ollama/llama3.2",
-            base_url="http://localhost:11434",  # Ollama's local endpoint
-            api_key="NA"  # If authentication is required
+        self.llm = Ollama(
+            model="llama3:8b",
+            base_url="http://localhost:11434",
         )
 
-        # Define agents
-        self.market_analysis_agent = Agent(
-            role='Market Analyst',
-            goal='Evaluate market potential and trends',
-            backstory='Expert in market analysis with a focus on emerging trends.',
-            llm=llm
+        self.market_research_agent = Agent(
+            role='Market Researcher',
+            goal='Identify market opportunities and target audience',
+            backstory='Expert in market research with a focus on identifying new opportunities.',
+            llm=self.llm
         )
 
-        self.financial_projection_agent = Agent(
-            role='Financial Analyst',
-            goal='Assess financial viability and projections',
-            backstory='Experienced in financial modeling and projections.',
-            llm=llm
+        self.financial_planner_agent = Agent(
+            role='Financial Planner',
+            goal='Develop financial projections and budget plans',
+            backstory='Experienced in financial planning and budgeting.',
+            llm=self.llm
         )
 
-        self.operational_feasibility_agent = Agent(
-            role='Operations Specialist',
-            goal='Evaluate operational feasibility',
-            backstory='Specialist in operational processes and efficiency.',
-            llm=llm
+        self.competitive_analysis_agent = Agent(
+            role='Competitive Analyst',
+            goal='Analyze competitors and identify market positioning',
+            backstory='Specialist in competitive analysis and market positioning strategies.',
+            llm=self.llm
         )
 
-        self.legal_considerations_agent = Agent(
-            role='Legal Advisor',
-            goal='Review legal compliance and issues',
-            backstory='Legal expert with a focus on business compliance.',
-            llm=llm
-        )
-
-        self.central_aggregator_agent = Agent(
-            role='Central Aggregator',
-            goal='Compile and synthesize insights from all agents',
-            backstory='Responsible for creating a comprehensive evaluation report.',
-            llm=llm
+        self.business_plan_aggregator_agent = Agent(
+            role='Business Plan Aggregator',
+            goal='Compile and synthesize the business plan components',
+            backstory='Responsible for creating a cohesive and comprehensive business plan.',
+            llm=self.llm
         )

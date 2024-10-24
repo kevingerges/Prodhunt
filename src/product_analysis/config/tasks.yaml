@@ -1,43 +1,27 @@
-
-
-generate_llm_text_task:
+market_research_task:
   description: >
-    Generate text using LLaMA from Hugging Face API.
+    Conduct market research to identify opportunities and target audience for {business_idea}
   expected_output: >
-    A well-articulated text based on the given prompt.
-  agent: llama_agent  # The agent using the custom tool
+    Detailed market analysis report including target audience and market opportunities
+  agent: market_research_agent
 
-market_analysis_task:
+financial_planning_task:
   description: >
-    Conduct market analysis for the business plan
+    Develop financial projections and budget plans for {business_idea}
   expected_output: >
-    Detailed market analysis report
-  agent: market_analysis_agent
+    Financial projections and budget plan for the business
+  agent: financial_planner_agent
 
-financial_projection_task:
+competitive_analysis_task:
   description: >
-    Perform financial projections for the business plan
+    Analyze competitors and identify market positioning for {business_idea}
   expected_output: >
-    Financial viability report
-  agent: financial_projection_agent
+    Competitive analysis report with market positioning strategy
+  agent: competitive_analysis_agent
 
-operational_feasibility_task:
+business_plan_aggregation_task:
   description: >
-    Assess operational feasibility of the business plan
+    Compile and synthesize the business plan components for {business_idea}
   expected_output: >
-    Operational feasibility report
-  agent: operational_feasibility_agent
-
-legal_considerations_task:
-  description: >
-    Review legal aspects of the business plan
-  expected_output: >
-    Legal compliance report
-  agent: legal_considerations_agent
-
-central_aggregation_task:
-  description: >
-    Aggregate insights from all agents and compile a final evaluation
-  expected_output: >
-    Comprehensive business plan evaluation
-  agent: central_aggregator_agent
+    Comprehensive business plan document
+  agent: business_plan_aggregator_agent
