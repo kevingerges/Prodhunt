@@ -1,12 +1,16 @@
-from langchain_community.llms import Ollama
 from crewai import Agent
+from langchain_openai import ChatOpenAI
+from dotenv import load_dotenv
+load_dotenv()
 
 class BusinessPlanAgents:
     def __init__(self):
-        self.llm = Ollama(
-            model="llama3:8b",
-            base_url="http://localhost:11434",
+        
+        self.llm = ChatOpenAI(
+            model="ollama/llama3",
+            base_url="http://localhost:11434/v1"
         )
+
 
         self.market_research_agent = Agent(
             role='Market Researcher',

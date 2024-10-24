@@ -1,11 +1,17 @@
 from crewai import Crew, Task
-from langchain_community.llms import Ollama
 from agents import BusinessPlanAgents
+from dotenv import load_dotenv
+from langchain_openai import ChatOpenAI
+
+load_dotenv()
 
 class BusinessPlanCrew:
     def crew(self):
+        llm = ChatOpenAI(
+            model="ollama/llama3",
+            base_url="http://localhost:11434/v1"
+        )
         agents = BusinessPlanAgents()
-        llm = agents.llm  # Use the same LLM instance from BusinessPlanAgents
         
         return Crew(
             agents=[
@@ -36,6 +42,5 @@ class BusinessPlanCrew:
                     agent=agents.business_plan_aggregator_agent
                 )
             ],
-            verbose=True,
-            llm=llm
+            verbose=True
         )
