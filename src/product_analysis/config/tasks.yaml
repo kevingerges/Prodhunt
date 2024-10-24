@@ -1,0 +1,43 @@
+
+
+generate_llm_text_task:
+  description: >
+    Generate text using LLaMA from Hugging Face API.
+  expected_output: >
+    A well-articulated text based on the given prompt.
+  agent: llama_agent  # The agent using the custom tool
+
+market_analysis_task:
+  description: >
+    Conduct market analysis for the business plan
+  expected_output: >
+    Detailed market analysis report
+  agent: market_analysis_agent
+
+financial_projection_task:
+  description: >
+    Perform financial projections for the business plan
+  expected_output: >
+    Financial viability report
+  agent: financial_projection_agent
+
+operational_feasibility_task:
+  description: >
+    Assess operational feasibility of the business plan
+  expected_output: >
+    Operational feasibility report
+  agent: operational_feasibility_agent
+
+legal_considerations_task:
+  description: >
+    Review legal aspects of the business plan
+  expected_output: >
+    Legal compliance report
+  agent: legal_considerations_agent
+
+central_aggregation_task:
+  description: >
+    Aggregate insights from all agents and compile a final evaluation
+  expected_output: >
+    Comprehensive business plan evaluation
+  agent: central_aggregator_agent
