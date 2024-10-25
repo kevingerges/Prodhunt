@@ -6,6 +6,13 @@ import sys
 from datetime import datetime
 
 
+def format_crew_output(output):
+    """Convert CrewOutput to formatted string."""
+    if hasattr(output, 'raw_output'):
+        return str(output.raw_output)
+    return str(output)
+
+
 def run():
     load_dotenv()
     print("\n=== Business Plan Analysis Tool ===")
@@ -26,16 +33,19 @@ def run():
         print("\nStarting analysis...\n")
         result = crew.kickoff(inputs=inputs)
 
+        # Convert result to string
+        formatted_result = format_crew_output(result)
+
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         filename = f"business_plan_{timestamp}.txt"
 
         with open(filename, "w") as f:
             f.write(f"Business Plan Analysis for: {business_idea}\n")
             f.write("=" * 50 + "\n\n")
-            f.write(result)
+            f.write(formatted_result)
 
         print(f"\nAnalysis complete! Results saved to: {filename}")
-        print("\n" + result)
+        print("\n" + formatted_result)
 
     except KeyboardInterrupt:
         print("\n\nProcess interrupted by user. Exiting gracefully...")
