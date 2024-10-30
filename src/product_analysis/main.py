@@ -1,62 +1,41 @@
-#!/usr/bin/env python
+from business_input import BusinessInputProcessor
 from crew import BusinessPlanCrew
 from dotenv import load_dotenv
-import os
-import sys
 from datetime import datetime
-
-
-def format_crew_output(output):
-    """Convert CrewOutput to formatted string."""
-    if hasattr(output, 'raw_output'):
-        return str(output.raw_output)
-    return str(output)
-
+import json
 
 def run():
     load_dotenv()
-    print("\n=== Business Plan Analysis Tool ===")
-    print(f"Started at: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-    print(f"Using Python: {sys.version.split()[0]}")
-    print(f"OLLAMA_BASE_URL: {os.getenv('OLLAMA_BASE_URL')}")
-    print(f"OPENAI_MODEL_NAME: {os.getenv('OPENAI_MODEL_NAME')}")
-    print("\n" + "=" * 40 + "\n")
+    # Initialize input processor
+    input_processor = BusinessInputProcessor()
 
     try:
-        business_idea = input("Enter your business idea: ")
-        print(f"\nAnalyzing: {business_idea}\n")
+        # Get processed business context
+        business_context = input_processor.process_business_idea()
 
-        inputs = {"business_idea": business_idea}
-
-        crew = BusinessPlanCrew().crew()
-
-        print("\nStarting analysis...\n")
-        result = crew.kickoff(inputs=inputs)
-
-        # Convert result to string
-        formatted_result = format_crew_output(result)
-
+        # Save raw input for reference
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        filename = f"business_plan_{timestamp}.txt"
+        with open(f"business_input_{timestamp}.json", "w") as f:
+            json.dump(business_context, f, indent=2)
 
-        with open(filename, "w") as f:
-            f.write(f"Business Plan Analysis for: {business_idea}\n")
-            f.write("=" * 50 + "\n\n")
-            f.write(formatted_result)
+        # Initialize and run crew with enhanced context
+        crew = BusinessPlanCrew()
+        result = crew.execute_analysis(business_context)
 
-        print(f"\nAnalysis complete! Results saved to: {filename}")
-        print("\n" + formatted_result)
+        # Convert the output to a string representation to handle any non-serializable types
+        result_output = json.dumps(result["result"], indent=2, default=str)
+
+        # Write output to file
+        with open(f"business_output_{timestamp}.json", "w") as f:
+            f.write(result_output)
+
+        print("\nOutput saved successfully.")
 
     except KeyboardInterrupt:
         print("\n\nProcess interrupted by user. Exiting gracefully...")
     except Exception as e:
-        print("\nAn unexpected error occurred:")
-        print(f"Error type: {type(e).__name__}")
-        print(f"Error message: {str(e)}")
-        print("\nPlease check your configuration and try again.")
-    finally:
-        print("\n=== Analysis Session Complete ===\n")
-
+        print(f"\nError: {str(e)}")
+        raise
 
 if __name__ == "__main__":
     run()

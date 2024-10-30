@@ -1,6 +1,5 @@
 from crewai import Agent
 
-
 class BusinessPlanAgents:
     def __init__(self, llm):
         if not llm:
