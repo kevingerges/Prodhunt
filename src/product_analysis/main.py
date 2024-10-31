@@ -1,61 +1,108 @@
-#!/usr/bin/env python
-from crew import BusinessPlanCrew
 from dotenv import load_dotenv
-import os
-import sys
 from datetime import datetime
+import json
+import os
+from pathlib import Path
+
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+
+from business_plan.core.business_plan_crew import BusinessPlanCrew
 
 
-def format_crew_output(output):
-    """Convert CrewOutput to formatted string."""
-    if hasattr(output, 'raw_output'):
-        return str(output.raw_output)
-    return str(output)
+def setup_folders():
+    """Create necessary folders for output"""
+    folders = ['output', 'logs']
+    for folder in folders:
+        Path(folder).mkdir(exist_ok=True)
+
+
+def get_non_empty_input(prompt_text):
+    """Prompt the user for input until they provide a non-empty response."""
+    while True:
+        user_input = input(prompt_text).strip()
+        if user_input:
+            return user_input
+        else:
+            print("This field is required. Please enter a value.")
+
+
+
+def get_business_input() -> dict:
+    """Gather business plan input from user with validation."""
+    print("\n=== Business Plan Generator ===\n")
+
+    return {
+        "input_data": {
+            "business_idea": get_non_empty_input("Enter your business idea: "),
+            "industry": get_non_empty_input("Enter the industry: "),
+            "scale": get_non_empty_input("Enter business scale (Local/Regional/National/Global): "),
+            "target_market": get_non_empty_input("Enter target market: "),
+            "initial_investment": get_non_empty_input("Enter estimated initial investment: "),
+            "timeline": get_non_empty_input("Enter expected timeline to launch: ")
+        }
+    }
+
+
+def save_results(results: dict, timestamp: str):
+    """Save results to files"""
+    if results.get("document"):
+        with open(f"output/business_plan_{timestamp}.md", 'w') as f:
+            f.write(results["document"])
+
+    with open(f"output/metrics_{timestamp}.json", 'w') as f:
+        json.dump({
+            "metrics": results.get("metrics", {}),
+            "validation": results.get("validation", {}),
+            "execution_time": results.get("execution_time", "")
+        }, f, indent=2)
 
 
 def run():
-    load_dotenv()
-    print("\n=== Business Plan Analysis Tool ===")
-    print(f"Started at: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-    print(f"Using Python: {sys.version.split()[0]}")
-    print(f"OLLAMA_BASE_URL: {os.getenv('OLLAMA_BASE_URL')}")
-    print(f"OPENAI_MODEL_NAME: {os.getenv('OPENAI_MODEL_NAME')}")
-    print("\n" + "=" * 40 + "\n")
-
+    """Main execution function"""
     try:
-        business_idea = input("Enter your business idea: ")
-        print(f"\nAnalyzing: {business_idea}\n")
+        # environment variables
+        load_dotenv()
 
-        inputs = {"business_idea": business_idea}
-
-        crew = BusinessPlanCrew().crew()
-
-        print("\nStarting analysis...\n")
-        result = crew.kickoff(inputs=inputs)
-
-        # Convert result to string
-        formatted_result = format_crew_output(result)
+        setup_folders()
 
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        filename = f"business_plan_{timestamp}.txt"
 
-        with open(filename, "w") as f:
-            f.write(f"Business Plan Analysis for: {business_idea}\n")
-            f.write("=" * 50 + "\n\n")
-            f.write(formatted_result)
+        print("\nGathering business information...")
+        business_context = get_business_input()
 
-        print(f"\nAnalysis complete! Results saved to: {filename}")
-        print("\n" + formatted_result)
+        with open(f"output/input_{timestamp}.json", "w") as f:
+            json.dump(business_context, f, indent=2)
+
+        print("\nInitializing business plan generation...")
+        crew = BusinessPlanCrew()
+
+        print("\nGenerating business plan...")
+        results = crew.execute_analysis(business_context)
+
+
+        print("\nSaving results...")
+        save_results(results, timestamp)
+
+        if results["status"] == "success":
+            print("\n=== Generation Complete ===")
+            print(f"Business plan saved as: business_plan_{timestamp}.md")
+            print(f"Metrics saved as: metrics_{timestamp}.json")
+
+            if results.get("metrics", {}).get("warnings"):
+                print("\nWarnings:")
+                for warning in results["metrics"]["warnings"]:
+                    print(f"- {warning}")
+        else:
+            print("\n=== Generation Failed ===")
+            print(f"Error: {results.get('error_message', 'Unknown error')}")
 
     except KeyboardInterrupt:
         print("\n\nProcess interrupted by user. Exiting gracefully...")
     except Exception as e:
-        print("\nAn unexpected error occurred:")
-        print(f"Error type: {type(e).__name__}")
-        print(f"Error message: {str(e)}")
-        print("\nPlease check your configuration and try again.")
-    finally:
-        print("\n=== Analysis Session Complete ===\n")
+        print(f"\nError: {str(e)}")
+        raise
 
 
 if __name__ == "__main__":

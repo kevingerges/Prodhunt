@@ -1,0 +1,51 @@
+market_research:
+  - context: "SaaS project management tool for small businesses"
+    analysis: |
+      Market size: $10B globally, 15% YoY growth
+      Primary segments: freelancers (40%), small agencies (35%), startups (25%)
+      Key competitors: Asana, Trello, Monday.com
+      Main differentiators: price point, ease of use, integration capabilities
+    key_points:
+      - Rapid market growth in remote work segment
+      - Price sensitivity in target market
+      - Feature parity requirements with established players
+      - Integration capabilities critical for adoption
+
+financial_planning:
+  - context: "E-commerce platform startup"
+    analysis: |
+      Initial investment required: $500,000
+      Monthly operating costs: $50,000
+      Break-even point: Month 18
+      Revenue streams: Transaction fees (70%), Premium features (30%)
+    key_points:
+      - Multiple revenue streams essential
+      - Cash flow management critical in first year
+      - Scale economies after break-even
+      - Marketing costs front-loaded
+
+competitive_analysis:
+  - context: "Mobile food delivery service"
+    analysis: |
+      Market leaders: UberEats (45%), DoorDash (30%), GrubHub (15%)
+      Key differentiators: Local focus, restaurant partnerships, loyalty program
+      Entry barriers: Network effects, brand recognition
+      Opportunities: Underserved suburban markets, health-focused segments
+    key_points:
+      - Local market penetration strategy
+      - Restaurant exclusivity agreements
+      - Customer retention focus
+      - Technology infrastructure investment
+
+plan_aggregation:
+  - context: "Subscription box service"
+    analysis: |
+      Market opportunity: $5B market, 25% annual growth
+      Target demographic: Urban professionals, 25-45 years
+      Financial projections: $2M revenue Year 1, 40% margins
+      Competitive advantage: Personalization technology
+    key_points:
+      - Clear value proposition
+      - Scalable operations model
+      - Strong unit economics
+      - Data-driven personalization
