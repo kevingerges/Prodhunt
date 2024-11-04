@@ -1,4 +1,4 @@
-from crewai import Crew, Task, LLM
+from crewai import Crew, Task, LLM, Process
 from typing import Dict, Any, List, Tuple
 from datetime import datetime
 import os
@@ -42,35 +42,45 @@ class BusinessPlanCrew:
             self.agent_factory.create_market_research_agent(),
             self.agent_factory.create_financial_planner_agent(),
             self.agent_factory.create_competitive_analyst_agent(),
-            self.agent_factory.create_business_plan_aggregator_agent()
         ]
+        aggregator = self.agent_factory.create_business_plan_aggregator_agent()
 
-        tasks = [
-            Task(
-                description=self.prompts.MARKET_RESEARCH_TASK,
-                expected_output="Detailed market research report including market size, target audience analysis, trends, and growth projections.",
-                agent=agents[0]
-            ),
-            Task(
-                description=self.prompts.FINANCIAL_ANALYSIS_TASK,
-                expected_output="Comprehensive financial projections including startup costs, revenue forecasts, and break-even analysis.",
-                agent=agents[1]
-            ),
-            Task(
-                description=self.prompts.COMPETITIVE_ANALYSIS_TASK,
-                expected_output="Competitive landscape analysis with market positioning strategy and competitor profiles.",
-                agent=agents[2]
-            ),
-            Task(
-                description=self.prompts.BUSINESS_PLAN_TASK,
-                expected_output="Complete business plan integrating market, financial, and competitive analyses with implementation strategy.",
-                agent=agents[3]
-            )
-        ]
+        # Create tasks with dependencies
+        market_research = Task(
+            description=self.prompts.MARKET_RESEARCH_TASK,
+            expected_output="Detailed market research report including market size, target audience analysis, trends, and growth projections.",
+            agent=agents[0]
+        )
+
+        financial_planning = Task(
+            description=self.prompts.FINANCIAL_ANALYSIS_TASK,
+            expected_output="Comprehensive financial projections including startup costs, revenue forecasts, and break-even analysis.",
+            agent=agents[1],
+        )
+
+        competitive_analysis = Task(
+            description=self.prompts.COMPETITIVE_ANALYSIS_TASK,
+            expected_output="Competitive landscape analysis with market positioning strategy and competitor profiles.",
+            agent=agents[2],
+        )
+
+        business_plan = Task(
+            description=self.prompts.BUSINESS_PLAN_TASK,
+            expected_output=f'''
+            Complete business plan integrating market, financial, and competitive analyses with implementation strategy.
+            The business plan should be structured with clear sections and headings, and should be written in a clear and concise manner.
+            I've included an example of the expected output indicated by <EXAMPLE> tags, to a sample user input indicated by <INPUT> tags.
+            {self.prompts.BUSINESS_PLAN_EXPECTED_OUTPUT}
+            ''',
+            agent=aggregator,
+            context=[market_research, financial_planning, competitive_analysis]
+        )
 
         return Crew(
             agents=agents,
-            tasks=tasks,
+            tasks=[market_research, financial_planning, competitive_analysis, business_plan],
+            process=Process.hierarchical,
+            manager_agent=aggregator,
             verbose=True
         )
 
@@ -87,7 +97,6 @@ class BusinessPlanCrew:
 
         try:
             for task in tasks:
-                # Format task description with context variables
                 task.description = task.description.format(**context_vars)
 
         except KeyError as e:
@@ -136,7 +145,6 @@ class BusinessPlanCrew:
                 results,
                 self.agent_factory.examples if self.use_examples else {}
             )
-
             final_document = MarkdownFormatter.generate_markdown(enhanced_results)
 
             return final_document

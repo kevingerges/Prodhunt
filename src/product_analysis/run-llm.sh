@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Variables
-model_name="ollama/llama3:8b"
+model_name="llama3:8b"
 custom_model_name="llama3"
 
 # Get the base model

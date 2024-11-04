@@ -43,13 +43,13 @@ class AgentFactory:
             role='Senior Market Research Analyst',
             goal='Provide comprehensive market insights and detailed target audience analysis',
             backstory=f"""Experienced market researcher with deep expertise across multiple industries.
-Known for accurate market size predictions and identifying emerging trends.
-Specialized in identifying market opportunities and customer needs.
+            Known for accurate market size predictions and identifying emerging trends.
+            Specialized in identifying market opportunities and customer needs.
 
-Reference Examples:
-{formatted_examples}""",
-            allow_delegation=False,
-            llm=self.llm
+            Reference Examples:
+            {formatted_examples}""",
+                        allow_delegation=False,
+                        llm=self.llm
         )
 
     def create_financial_planner_agent(self) -> Agent:
@@ -60,11 +60,11 @@ Reference Examples:
             role='Financial Strategist',
             goal='Create detailed financial models and realistic projections',
             backstory=f"""Experienced financial advisor who has worked with businesses of all sizes.
-Expert in financial modeling, cost analysis, and revenue projections.
-Deep understanding of various business models and revenue streams.
+            Expert in financial modeling, cost analysis, and revenue projections.
+            Deep understanding of various business models and revenue streams.
 
-Reference Examples:
-{formatted_examples}""",
+            Reference Examples:
+            {formatted_examples}""",
             allow_delegation=False,
             llm=self.llm
         )
@@ -77,11 +77,11 @@ Reference Examples:
             role='Competition and Market Specialist',
             goal='Analyze competitive landscape and market positioning',
             backstory=f"""Industry-agnostic competition analyst with experience across markets.
-Expert at identifying competitive advantages and market gaps.
-Specialized in developing differentiation strategies.
+            Expert at identifying competitive advantages and market gaps.
+            Specialized in developing differentiation strategies.
 
-Reference Examples:
-{formatted_examples}""",
+            Reference Examples:
+            {formatted_examples}""",
             allow_delegation=False,
             llm=self.llm
         )
@@ -91,14 +91,14 @@ Reference Examples:
         examples_list = self.examples.get('plan_aggregation', [])
         formatted_examples = self._format_examples(examples_list)
         return Agent(
-            role='Business Strategy Director',
-            goal='Create comprehensive and actionable business plans',
+            role='Business Plan Generator',
+            goal='Create comprehensive and actionable business plans by synthesizing expert analyses into a cohesive document. Ensure ALL sections are thoroughly completed with specific details.',
             backstory=f"""Seasoned business strategist who has helped launch diverse ventures.
-Expert at crafting actionable business plans across various industries.
-Skilled in identifying key success factors and risk mitigation.
+            Expert at crafting actionable business plans across various industries.
+            Skilled in identifying key success factors and risk mitigation.
 
-Reference Examples:
-{formatted_examples}""",
-            allow_delegation=False,
+            Reference Examples:
+            {formatted_examples}""",
+            allow_delegation=True,
             llm=self.llm
         )
