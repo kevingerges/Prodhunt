@@ -4,6 +4,7 @@ from datetime import datetime
 import os
 
 from crewai.crews import CrewOutput
+from crewai_tools import LlamaIndexTool
 
 from src.product_analysis.business_plan.agents.agent_prompts import AgentPrompts
 from src.product_analysis.business_plan.utils.formatters import MarkdownFormatter, ContentFormatter
@@ -29,15 +30,18 @@ class BusinessPlanCrew:
         self.use_examples = use_examples
         self.prompts = AgentPrompts()
 
+        self.api_key = ""
+
         self.metrics = {
             "execution_time": 0,
             "completion_scores": {},
             "quality_scores": {},
             "warnings": []
         }
-    def _create_crew(self) -> Crew:
+    def _create_crew(self, input_data: Dict[str, Any]) -> Crew:
         """Create and configure the crew with all necessary agents"""
         # Create agents
+        self.agent_factory.set_input_data(input_data)
         agents = [
             self.agent_factory.create_market_research_agent(),
             self.agent_factory.create_financial_planner_agent(),
@@ -48,19 +52,20 @@ class BusinessPlanCrew:
         # Create tasks with dependencies
         market_research = Task(
             description=self.prompts.MARKET_RESEARCH_TASK,
-            expected_output="Detailed market research report including market size, target audience analysis, trends, and growth projections.",
-            agent=agents[0]
+            expected_output=self.prompts.MARKET_RESEARCH_EXPECTED_OUTPUT,
+            agent=agents[0],
+            output_file="market_research_output.md"
         )
 
         financial_planning = Task(
             description=self.prompts.FINANCIAL_ANALYSIS_TASK,
-            expected_output="Comprehensive financial projections including startup costs, revenue forecasts, and break-even analysis.",
+            expected_output=self.prompts.FINANCIAL_ANALYSIS_EXPECTED_OUTPUT,
             agent=agents[1],
         )
 
         competitive_analysis = Task(
             description=self.prompts.COMPETITIVE_ANALYSIS_TASK,
-            expected_output="Competitive landscape analysis with market positioning strategy and competitor profiles.",
+            expected_output=self.prompts.COMPETITIVE_ANALYSIS_EXPECTED_OUTPUT,
             agent=agents[2],
         )
 
@@ -77,10 +82,9 @@ class BusinessPlanCrew:
         )
 
         return Crew(
-            agents=agents,
+            agents=agents + [aggregator],
             tasks=[market_research, financial_planning, competitive_analysis, business_plan],
-            process=Process.hierarchical,
-            manager_agent=aggregator,
+            process=Process.sequential,
             verbose=True
         )
 
@@ -282,11 +286,11 @@ class BusinessPlanCrew:
     def execute_analysis(self, business_context: Dict[str, Any]) -> Dict[str, Any]:
         """Execute the business plan analysis"""
         try:
-            crew = self._create_crew()
+            crew = self._create_crew(input_data=business_context["input_data"])
             self._update_tasks_with_context(crew.tasks, business_context)
 
             print("\nExecuting business plan analysis...")
-            result = crew.kickoff()
+            result = crew.kickoff(inputs=business_context["input_data"])
             print("\nInitial analysis complete. Processing results...")
 
             processed_results = self._process_results(crew, result)

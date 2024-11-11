@@ -5,8 +5,10 @@ Contains all prompts and templates for agent tasks
 
 class AgentPrompts:
     MARKET_RESEARCH_TASK = """
-    
-    Conduct detailed MARKET RESEARCH for {business_idea} in the {industry} industry focusing on:
+    Conduct detailed MARKET RESEARCH for {business_idea} in the {industry} industry focusing on the {target_market} market:
+"""
+
+    MARKET_RESEARCH_EXPECTED_OUTPUT = """
 
     1. Market Analysis:
        - Total market size and growth potential
@@ -51,12 +53,16 @@ class AgentPrompts:
     - Include numerical data with sources where possible
     - Organize insights by section
     - Highlight critical market factors
-    - Include brief summaries for each major section"""
+    - Include brief summaries for each major section
+    """
 
     FINANCIAL_ANALYSIS_TASK = """
-    Conduct FINANCIAL ANALYSIS by creating detailed financial projections for {business_idea} considering {scale} scale operations:
+    Conduct FINANCIAL ANALYSIS by creating detailed financial projections for {business_idea} considering {scale} scale operations in the {target_market} market with an initial investment of {initial_investment} and a timeline of {timeline}:
 
-    1. Setup and Operating Costs:
+    """
+
+    FINANCIAL_ANALYSIS_EXPECTED_OUTPUT = """
+1. Setup and Operating Costs:
        - Initial investment requirements
        - Operating cost breakdown
        - Resource allocation plan
@@ -99,13 +105,17 @@ class AgentPrompts:
     - Include monthly/yearly breakdowns
     - Highlight key financial metrics
     - Show calculation methodologies
-    - Include risk factors and mitigation strategies"""
+    - Include risk factors and mitigation strategies
+    """
 
     COMPETITIVE_ANALYSIS_TASK = """
     
-    Conduct COMPETITIVE ANALYSIS by analyzing the competitive landscape for {business_idea} in the {industry} market:
+    Conduct COMPETITIVE ANALYSIS by analyzing the competitive landscape for {business_idea} in the {industry} market targeting the {target_market} market:
 
-    1. Competitor Analysis:
+    """
+    
+    COMPETITIVE_ANALYSIS_EXPECTED_OUTPUT = """
+       1. Competitor Analysis:
        - Major players in {industry}
        - Market share distribution
        - Competitor strategies
@@ -148,48 +158,58 @@ class AgentPrompts:
     - Include market share charts
     - Highlight competitive advantages
     - Detail threat mitigation strategies
-    - Provide actionable insights"""
+    - Provide actionable insights
+    """
 
     BUSINESS_PLAN_TASK = """
     
-    Create a comprehensive business plan for {business_idea} targeting {scale} operations:
+    Create a comprehensive business plan for {business_idea} targeting {scale} operations in the {target_market} market with an initial investment of {initial_investment} and a timeline of {timeline}:
 
     Ensure your business plan:
     - Maintains consistency across all sections
     - Uses specific data points from expert analyses
-    - Provides clear rationale for recommendations
+    - Provides clear rationale for ALL recommendations and claims
     - Links strategies to market opportunities
+    - Is specific to the {industry} industry
+    - Is tailored to the {target_market} market
+    - Is tailored to the {scale} scale
+    - Is tailored to the {initial_investment} initial investment
+    - Is tailored to the {timeline} timeline
+    - Goes beyond generic business plan advice and provides specific recommendations for the {business_idea}
+    - Adds risk matrix
+    - Adds success metrics dashboard
+    - Each section and subsection is NOT EMPTY and COMPLETE. 
 
-    Generate the business plan with the following sections.
+    GENERATE the business plan with at LEAST the following FIVE sections and FIVE subsections each in DETAIL.
     1. Executive Summary:
-       - Business concept overview
+       - Business concept
        - Market opportunity
        - Value proposition
        - Financial highlights
-       - Implementation roadmap
+       - Implementation plan
 
-    2. Business Strategy:
+    2. Business Strategy
        - Operating model
        - Revenue model
        - Growth strategy
        - Scaling approach
        - Core competencies
 
-    3. Go-to-Market Plan:
+    3. Go-to-Market Plan
        - Market entry strategy
        - Marketing approach
        - Sales channels
        - Customer acquisition strategy
        - Partnership strategy
 
-    4. Implementation Plan:
+    4. Implementation Plan
        - Key milestones
        - Resource requirements
        - Timeline and phases
        - Operational setup
        - Team structure
 
-    5. Risk Management:
+    5. Risk Management
        - Key risks identification
        - Mitigation strategies
        - Success metrics
@@ -197,15 +217,7 @@ class AgentPrompts:
        - Monitoring approach
 
     Ensure all recommendations are specific to {industry} industry standards.
-    Integrate insights from MARKET RESEARCH, FINANCIAL ANALYSIS, and COMPETITIVE ANALYSIS.
-
-    Expected Output Format:
-    - Clear section organization
-    - Executive summary highlights
-    - Implementation timeline
-    - Risk matrix
-    - Success metrics dashboard
-    
+    Integrate insights from MARKET RESEARCH, COMPETITIVE ANALYSIS, and FINANCIAL ANALYSIS.
     """
     BUSINESS_PLAN_EXPECTED_OUTPUT = """
     <INPUT>
@@ -239,7 +251,7 @@ Sustainable Pack Co. offers eco-friendly packaging solutions tailored to each cl
 - Projected Break-Even: 12 months
 - Year 2 Revenue Projection: $2.4 million
 
-**Implementation Roadmap**  
+**Implementation Plan**  
 - Phase 1: Product development and supplier partnerships (Months 1-3)
 - Phase 2: Pilot launch with select e-commerce clients (Months 4-6)
 - Phase 3: National rollout and brand partnerships (Months 7-12)
@@ -334,4 +346,5 @@ Activate secondary suppliers in case of disruptions. Pivot to alternative eco-ma
 
 **Monitoring Approach**  
 Monthly KPI reviews with dashboards tracking client acquisition, production metrics, and environmental impact.
-         </EXAMPLE>"""
+         </EXAMPLE>
+"""
