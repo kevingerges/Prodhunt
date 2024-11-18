@@ -143,3 +143,41 @@ class ContentProcessor:
             return '\n'.join(highlighted)
         except Exception as e:
             return f"Error highlighting market metrics: {str(e)}\n{content}"
+    
+    @staticmethod
+    def process_market_analysis(content: str, market_data: Dict = None) -> str:
+        """Process market analysis content with enhanced insights"""
+        try:
+            formatted = ContentProcessor.format_section(content)
+            
+            if market_data:
+                formatted += "\n\n### Market Intelligence Insights\n"
+                
+                if "market_sentiment" in market_data:
+                    sentiment = market_data["market_sentiment"]
+                    formatted += f"\n**Market Sentiment**: {sentiment['interpretation']}"
+                    formatted += f"\n- Confidence Score: {sentiment['confidence']}\n"
+                
+                if "identified_trends" in market_data:
+                    formatted += "\n**Key Market Trends**:\n"
+                    for trend in market_data["identified_trends"]:
+                        formatted += f"- {trend['type'].title()}: {', '.join(trend['keywords'])} "
+                        formatted += f"(Confidence: {trend['confidence']})\n"
+                
+
+                if "opportunities" in market_data:
+                    formatted += "\n**Market Opportunities**:\n"
+                    for opp in market_data["opportunities"]:
+                        formatted += f"- {opp['description']} "
+                        formatted += f"(Confidence: {opp['confidence']})\n"
+            
+                if "risks" in market_data:
+                    formatted += "\n**Market Risks**:\n"
+                    for risk in market_data["risks"]:
+                        formatted += f"- {risk['description']} "
+                        formatted += f"(Type: {risk['risk_type']}, "
+                        formatted += f"Confidence: {risk['confidence']})\n"
+            
+            return ContentProcessor.highlight_market_metrics(formatted)
+        except Exception as e:
+            return f"Error processing market analysis: {str(e)}\n{content}"

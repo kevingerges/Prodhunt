@@ -6,11 +6,12 @@ import os
 from crewai.crews import CrewOutput
 from crewai_tools import LlamaIndexTool
 
-from src.product_analysis.business_plan.agents.agent_prompts import AgentPrompts
+from ..agents.agent_prompts import AgentPrompts
 from src.product_analysis.business_plan.utils.formatters import MarkdownFormatter, ContentFormatter
 from src.product_analysis.business_plan.utils.validators import BusinessPlanValidator
 from .content_processor import ContentProcessor
 from ..agents.agent_factory import AgentFactory
+from ..tools.market_analysis import MarketAnalysisPipeline
 
 
 class BusinessPlanCrew:
@@ -38,6 +39,14 @@ class BusinessPlanCrew:
             "quality_scores": {},
             "warnings": []
         }
+    
+    def _initialize_llm(self) -> LLM:
+        """Initialize LLM with configuration"""
+        return LLM(
+            base_url="http://localhost:11434",
+            model="ollama/llama2:13b"
+        )
+        
     def _create_crew(self, input_data: Dict[str, Any]) -> Crew:
         """Create and configure the crew with all necessary agents"""
         # Create agents
@@ -113,7 +122,6 @@ class BusinessPlanCrew:
     def _split_result_into_sections(self, result: str) -> List[str]:
         """Split the combined result string into sections for each task."""
 
-        # Split the result by agent headings
         sections = result.split('# Agent:')
         outputs = []
 
@@ -284,8 +292,10 @@ class BusinessPlanCrew:
         return '\n'.join(content).strip()
 
     def execute_analysis(self, business_context: Dict[str, Any]) -> Dict[str, Any]:
-        """Execute the business plan analysis"""
+        """Execute the business plan analysis with enhanced market analysis"""
         try:
+            market_analyzer = MarketAnalysisPipeline()
+            
             crew = self._create_crew(input_data=business_context["input_data"])
             self._update_tasks_with_context(crew.tasks, business_context)
 
@@ -294,16 +304,23 @@ class BusinessPlanCrew:
             print("\nInitial analysis complete. Processing results...")
 
             processed_results = self._process_results(crew, result)
+            
+            market_analysis = market_analyzer.analyze_market_data(processed_results)
+
+            processed_results["market_intelligence"] = market_analysis
+            
             validation_results = self._validate_results(processed_results)
             final_document = self.aggregate_results(processed_results)
 
             self.metrics["execution_time"] = str(datetime.now() - self.start_time)
+            self.metrics["market_analysis_confidence"] = market_analysis["confidence_score"]
 
             return {
                 "status": "success",
                 "document": final_document,
                 "metrics": self.metrics,
                 "validation": validation_results,
+                "market_intelligence": market_analysis,
                 "errors": []
             }
 
@@ -316,8 +333,7 @@ class BusinessPlanCrew:
                 "error_message": str(e),
                 "execution_time": str(datetime.now() - self.start_time),
                 "errors": [str(e)]
-                }
-
+            }
 
     def _process_results(self, crew: Crew, result: Any) -> Dict[str, Any]:
         """Process and structure analysis results"""
@@ -330,29 +346,35 @@ class BusinessPlanCrew:
         }
 
         try:
+            if not hasattr(result, 'tasks_output'):
+                raise ValueError("No tasks output available in result")
+
             for task_output in result.tasks_output:
                 output_text = str(task_output)
                 cleaned_text = self._clean_output_text(output_text)
-
+                
                 section_contents = self._split_into_sections(cleaned_text)
-
+                
                 for section_name, content in section_contents.items():
                     if content and section_name in sections:
                         sections[section_name]["content"].append(content)
                         sections[section_name]["status"] = "complete"
+            
+            for section in sections.values():
+                if "status" not in section:
+                    section["status"] = "pending"
+                
+                if section["content"] and section["status"] == "pending":
+                    section["status"] = "complete"
 
-            for section_name, section_data in sections.items():
-                if section_data["content"]:
-                    unique_content = self._get_unique_content(section_data["content"])
-                    formatted_content = self._format_section_content(unique_content, section_name)
-                    sections[section_name]["content"] = [formatted_content]
+            return sections
 
         except Exception as e:
             print(f"Error processing results: {str(e)}")
-            raise
-
-        return sections
-
+            for section in sections.values():
+                section["status"] = "error"
+            return sections
+    
     def _split_into_sections(self, text: str) -> Dict[str, str]:
         """Split text into relevant sections based on headers"""
         sections = {

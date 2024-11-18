@@ -2,14 +2,12 @@
 Contains all prompts and templates for agent tasks
 """
 
-
 class AgentPrompts:
     MARKET_RESEARCH_TASK = """
     Conduct detailed MARKET RESEARCH for {business_idea} in the {industry} industry focusing on the {target_market} market:
 """
 
     MARKET_RESEARCH_EXPECTED_OUTPUT = """
-
     1. Market Analysis:
        - Total market size and growth potential
        - Market segmentation and trends
@@ -58,11 +56,10 @@ class AgentPrompts:
 
     FINANCIAL_ANALYSIS_TASK = """
     Conduct FINANCIAL ANALYSIS by creating detailed financial projections for {business_idea} considering {scale} scale operations in the {target_market} market with an initial investment of {initial_investment} and a timeline of {timeline}:
-
     """
 
     FINANCIAL_ANALYSIS_EXPECTED_OUTPUT = """
-1. Setup and Operating Costs:
+    1. Setup and Operating Costs:
        - Initial investment requirements
        - Operating cost breakdown
        - Resource allocation plan
@@ -109,13 +106,11 @@ class AgentPrompts:
     """
 
     COMPETITIVE_ANALYSIS_TASK = """
-    
     Conduct COMPETITIVE ANALYSIS by analyzing the competitive landscape for {business_idea} in the {industry} market targeting the {target_market} market:
-
     """
     
     COMPETITIVE_ANALYSIS_EXPECTED_OUTPUT = """
-       1. Competitor Analysis:
+    1. Competitor Analysis:
        - Major players in {industry}
        - Market share distribution
        - Competitor strategies
@@ -162,64 +157,98 @@ class AgentPrompts:
     """
 
     BUSINESS_PLAN_TASK = """
+    As the Business Plan Generator, your role is to create a comprehensive and cohesive business plan by synthesizing and harmonizing the analyses from the Market Research, Financial Analysis, and Competitive Analysis experts. 
     
-    Create a comprehensive business plan for {business_idea} targeting {scale} operations in the {target_market} market with an initial investment of {initial_investment} and a timeline of {timeline}:
+    Business Context:
+    - Business Idea: {business_idea}
+    - Industry: {industry}
+    - Scale: {scale}
+    - Target Market: {target_market}
+    - Initial Investment: {initial_investment}
+    - Timeline: {timeline}
 
-    Ensure your business plan:
-    - Maintains consistency across all sections
-    - Uses specific data points from expert analyses
-    - Provides clear rationale for ALL recommendations and claims
-    - Links strategies to market opportunities
-    - Is specific to the {industry} industry
-    - Is tailored to the {target_market} market
-    - Is tailored to the {scale} scale
-    - Is tailored to the {initial_investment} initial investment
-    - Is tailored to the {timeline} timeline
-    - Goes beyond generic business plan advice and provides specific recommendations for the {business_idea}
-    - Adds risk matrix
-    - Adds success metrics dashboard
-    - Each section and subsection is NOT EMPTY and COMPLETE. 
+    Integration Guidelines:
+    1. Cross-Reference Analysis:
+       - Ensure market size data aligns across market and financial sections
+       - Verify competitive positioning matches market opportunities
+       - Confirm financial projections reflect market conditions
+       - Link implementation timeline to market entry strategy
 
-    GENERATE the business plan with at LEAST the following FIVE sections and FIVE subsections each in DETAIL.
-    1. Executive Summary:
-       - Business concept
-       - Market opportunity
-       - Value proposition
+    2. Consistency Checks:
+       - Use consistent terminology across all sections
+       - Maintain aligned growth projections
+       - Ensure compatible market assumptions
+       - Verify matching timeline references
+
+    3. Quality Standards:
+       - Every section must include specific, actionable details
+       - All claims must be supported by data or expert analysis
+       - Financial projections must align with market potential
+       - Risk assessments must cover all key areas
+
+    4. Synthesis Requirements:
+       - Identify and resolve any conflicts between expert analyses
+       - Highlight synergies between different aspects of the plan
+       - Create clear connections between sections
+       - Ensure logical flow of information
+
+    Generate a complete business plan with the following structure:
+
+    1. Executive Summary
+       - Compelling business concept overview
+       - Clear value proposition
+       - Key market opportunities
        - Financial highlights
-       - Implementation plan
+       - Implementation roadmap
 
-    2. Business Strategy
-       - Operating model
-       - Revenue model
-       - Growth strategy
-       - Scaling approach
-       - Core competencies
+    2. Market Analysis (Integrate Market Research)
+       - Market size and trends
+       - Customer segmentation
+       - Market drivers
+       - Growth potential
+       - Entry timing rationale
 
-    3. Go-to-Market Plan
-       - Market entry strategy
-       - Marketing approach
-       - Sales channels
-       - Customer acquisition strategy
-       - Partnership strategy
+    3. Competitive Strategy (Integrate Competitive Analysis)
+       - Competitive landscape
+       - Positioning strategy
+       - Competitive advantages
+       - Market entry approach
+       - Differentiation factors
 
-    4. Implementation Plan
-       - Key milestones
+    4. Financial Plan (Integrate Financial Analysis)
+       - Startup costs
+       - Revenue projections
+       - Profitability analysis
+       - Funding requirements
+       - Key metrics and milestones
+
+    5. Implementation Strategy
+       - Detailed timeline
        - Resource requirements
-       - Timeline and phases
-       - Operational setup
-       - Team structure
-
-    5. Risk Management
-       - Key risks identification
-       - Mitigation strategies
+       - Key partnerships
+       - Risk mitigation
        - Success metrics
-       - Contingency plans
-       - Monitoring approach
 
-    Ensure all recommendations are specific to {industry} industry standards.
-    Integrate insights from MARKET RESEARCH, COMPETITIVE ANALYSIS, and FINANCIAL ANALYSIS.
+    Quality Control Requirements:
+    - Each section must be complete with no placeholder content
+    - All numerical data must be consistent across sections
+    - Every strategy must be specific to {industry} industry
+    - All projections must align with {scale} scale operations
+    - Implementation must fit {timeline} timeline
+    - Financial plans must reflect {initial_investment} investment
+
+    Validation Checklist:
+    □ All sections are thoroughly completed
+    □ Numbers and projections are consistent
+    □ Industry-specific strategies are included
+    □ Timeline milestones are realistic
+    □ Resource requirements are fully detailed
+    □ Risks and mitigation strategies are addressed
     """
+
     BUSINESS_PLAN_EXPECTED_OUTPUT = """
+    Your business plan should follow this structure with specific, actionable content in each section. Use the provided template and example as a reference for formatting and detail level expected.
+
     <INPUT>
       business_idea: "Offer biodegradable and eco-friendly packaging solutions tailored for e-commerce businesses."
       industry: "Packaging
@@ -229,6 +258,8 @@ class AgentPrompts:
       timeline: "6 months"
    </INPUT>
    <EXAMPLE>
+      [Previous example content remains the same...]
+   </EXAMPLE>
       # Business Plan for Sustainable Pack Co.
 
 ---
