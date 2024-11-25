@@ -13,6 +13,7 @@ class AgentFactory:
         """Initialize the agent factory with enhanced capabilities"""
         self.llm = llm
         self.context = {}
+        self.examples = self._load_examples()
         try:
             self.rag_tool = DynamicRAGTool()
             self.market_analyzer = MarketAnalysisPipeline()
@@ -117,10 +118,42 @@ class AgentFactory:
             verbose=True
         )
 
+    def create_executive_summary_agent(self) -> Agent:
+        """Create a executive summary agent"""
+        return Agent(
+            role='Executive Summary Specialist',
+            goal=f'''Create a concise Executive Summary for {self.context.get("business_idea")}.
+                    Synthesize market research, financial projections, and competitive analysis.
+                    Ensure all recommendations are validated with real market data.''',
+            backstory='''You are a business strategist who excels at creating concise executive summaries.
+                    You synthesize complex information into clear, actionable insights.''',
+            allow_delegation=False,
+            llm=self.llm,
+            verbose=True
+        )
+
+    def create_implementation_plan_agent(self) -> Agent:
+        """Create a implementation plan agent"""
+        return Agent(
+            role='Implementation Plan Specialist',
+            goal=f'''Create a detailed Implementation Plan for {self.context.get("business_idea")} with {self.context.get("initial_investment")} investment over {self.context.get("timeline")}.
+                    Define key milestones and timeline.
+                    Outline resource requirements.
+                    Detail operational strategy.
+                    Specify growth phases.
+                    ''',
+            backstory=f'''You are a business strategist who excels at creating detailed implementation plans.
+                    You are skilled at defining timelines, milestones, and resource requirements, using real-time data, market research, competitive analysis, and financial projections.
+                    You create actionable plans that guide businesses through launch and growth phases.''',
+            allow_delegation=False,
+            llm=self.llm,
+            verbose=True
+        )
+
     def _load_examples(self) -> Dict:
         """Load example business plans for reference"""
         try:
-            examples_path = Path(__file__).parent / 'examples' / 'few_shot_examples.yaml'
+            examples_path = Path(__file__).parent.parent / 'examples' / 'few_shot_examples.yaml'
             with open(examples_path, 'r') as f:
                 return yaml.safe_load(f)
         except Exception as e:
@@ -294,13 +327,33 @@ class SmartAgentFactory:
         
         return Agent(
             role='Business Plan Integration Specialist',
-            goal=f'''Create a comprehensive business plan for {self.business_idea}.
+            goal=f'''Depending on the task, creates an Executive Summary, Implementation Plan, or comprehensive Business Plan for {self.business_idea}.
                     Synthesize market research, financial projections, and competitive analysis.
-                    Ensure all recommendations are backed by current market data.''',
+                    Ensure all recommendations are backed by current market data.
+                    Ensure all sections are prepended with the section name and thoroughly written.
+                    Section names should be in the following order: Market Analysis, Financial Analysis, Competitive Analysis, Executive Summary, Implementation Plan.
+                    ''',
             backstory=f'''You are a business strategist who excels at creating actionable plans.
                     You know how to integrate multiple sources of information into coherent strategies.
                     You validate all assumptions with real-world data and market insights.''',
             tools=tools,
+            allow_delegation=False,
+            llm=self.llm,
+            verbose=True
+        )
+    def create_implementation_plan_agent(self) -> Agent:
+        """Create a implementation plan agent"""
+        return Agent(
+            role='Implementation Plan Specialist',
+            goal=f'''Create a detailed Implementation Plan for {self.business_idea} with {self.initial_investment} investment over {self.timeline}.
+                    Define key milestones and timeline.
+                    Outline resource requirements.
+                    Detail operational strategy.
+                    Specify growth phases.
+                    ''',
+            backstory=f'''You are a business strategist who excels at creating detailed implementation plans.
+                    You are skilled at defining timelines, milestones, and resource requirements, using real-time data, market research, competitive analysis, and financial projections.
+                    You create actionable plans that guide businesses through launch and growth phases.''',
             allow_delegation=False,
             llm=self.llm,
             verbose=True

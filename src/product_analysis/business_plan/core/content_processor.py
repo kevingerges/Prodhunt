@@ -181,3 +181,139 @@ class ContentProcessor:
             return ContentProcessor.highlight_market_metrics(formatted)
         except Exception as e:
             return f"Error processing market analysis: {str(e)}\n{content}"
+
+    @staticmethod
+    def process_implementation_plan(content: str) -> str:
+        """Process and format implementation plan content"""
+        if not content:
+            return ""
+
+        formatted = []
+        current_phase = None
+
+        for line in content.split('\n'):
+            line = line.strip()
+            if not line:
+                continue
+
+            # Handle phase headers
+            if line.startswith('Phase') or 'Timeline' in line or 'Milestone' in line:
+                current_phase = line
+                formatted.append(f"\n### {line}\n")
+            # Handle bullet points
+            elif line.startswith('-') or line.startswith('*'):
+                formatted.append(line)
+            # Handle normal text
+            else:
+                formatted.append(line)
+
+        return '\n'.join(formatted)
+
+    @staticmethod
+    def format_market_intelligence(market_data: Dict) -> str:
+        """Format market intelligence data into readable markdown"""
+        formatted = []
+        
+        if "market_sentiment" in market_data:
+            sentiment = market_data["market_sentiment"]
+            formatted.append(f"**Market Sentiment**: {sentiment.get('interpretation', 'N/A')}")
+            formatted.append(f"- Confidence Score: {sentiment.get('confidence', 'N/A')}\n")
+        
+        if "identified_trends" in market_data:
+            formatted.append("**Key Market Trends**:")
+            for trend in market_data["identified_trends"]:
+                formatted.append(f"- {trend.get('type', '').title()}: {', '.join(trend.get('keywords', []))}")
+                formatted.append(f"  (Confidence: {trend.get('confidence', 'N/A')})")
+        
+        if "opportunities" in market_data:
+            formatted.append("\n**Market Opportunities**:")
+            for opp in market_data["opportunities"]:
+                formatted.append(f"- {opp.get('description', 'N/A')}")
+                formatted.append(f"  (Confidence: {opp.get('confidence', 'N/A')})")
+        
+        if "risks" in market_data:
+            formatted.append("\n**Market Risks**:")
+            for risk in market_data["risks"]:
+                formatted.append(f"- {risk.get('description', 'N/A')}")
+                formatted.append(f"  (Type: {risk.get('risk_type', 'N/A')}, "
+                               f"Confidence: {risk.get('confidence', 'N/A')})")
+        
+        return '\n'.join(formatted)
+
+    @staticmethod
+    def process_executive_summary(content: str) -> str:
+        """Process and format executive summary content with enhanced structure"""
+        if not content:
+            return ""
+
+        formatted = []
+        sections = {
+            "Business Overview": [],
+            "Market Opportunity": [],
+            "Financial Highlights": [],
+            "Competitive Advantage": [],
+            "Implementation Strategy": []
+        }
+        
+        current_section = None
+        lines = content.split('\n')
+
+        # First pass: categorize content into sections
+        for line in lines:
+            line = line.strip()
+            if not line:
+                continue
+
+            # Check for section headers
+            lower_line = line.lower()
+            if "overview" in lower_line or "concept" in lower_line:
+                current_section = "Business Overview"
+            elif "market" in lower_line or "opportunity" in lower_line:
+                current_section = "Market Opportunity"
+            elif "financial" in lower_line or "revenue" in lower_line:
+                current_section = "Financial Highlights"
+            elif "competitive" in lower_line or "advantage" in lower_line:
+                current_section = "Competitive Advantage"
+            elif "implementation" in lower_line or "strategy" in lower_line:
+                current_section = "Implementation Strategy"
+            
+            # Add content to current section
+            if current_section and line:
+                sections[current_section].append(line)
+
+        # Second pass: format each section
+        for section_name, content_lines in sections.items():
+            if content_lines:
+                formatted.append(f"\n### {section_name}")
+                
+                # Process bullet points and formatting
+                for line in content_lines:
+                    if line.startswith(('•', '-', '*')):
+                        formatted.append(line)
+                    elif ':' in line:
+                        key, value = line.split(':', 1)
+                        formatted.append(f"**{key.strip()}**: {value.strip()}")
+                    else:
+                        formatted.append(line)
+                
+                formatted.append("")  # Add spacing between sections
+
+        # Add transition sentences
+        transitions = {
+            "Market Opportunity": "\nBuilding on our core business concept...",
+            "Financial Highlights": "\nTo capitalize on this market opportunity...",
+            "Competitive Advantage": "\nSupporting our financial projections...",
+            "Implementation Strategy": "\nLeveraging our competitive advantages..."
+        }
+
+        final_content = []
+        current_section = None
+        
+        for line in formatted:
+            if line.startswith("### "):
+                current_section = line[4:]
+                if current_section in transitions:
+                    final_content.append(transitions[current_section])
+            final_content.append(line)
+
+        return '\n'.join(final_content).strip()

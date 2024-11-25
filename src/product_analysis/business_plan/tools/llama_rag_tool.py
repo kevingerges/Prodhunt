@@ -1,7 +1,7 @@
 from crewai_tools import BaseTool, SerperDevTool, ScrapeWebsiteTool
 from typing import Dict, Optional
 from dataclasses import dataclass, field
-from langchain.embeddings import HuggingFaceEmbeddings
+from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 import numpy as np
 from pathlib import Path

@@ -8,6 +8,7 @@ class AgentPrompts:
 """
 
     MARKET_RESEARCH_EXPECTED_OUTPUT = """
+    Always prepend start the section with \"Market Research\"
     1. Market Analysis:
        - Total market size and growth potential
        - Market segmentation and trends
@@ -59,6 +60,7 @@ class AgentPrompts:
     """
 
     FINANCIAL_ANALYSIS_EXPECTED_OUTPUT = """
+    Always prepend start the section with \"Financial Analysis\"
     1. Setup and Operating Costs:
        - Initial investment requirements
        - Operating cost breakdown
@@ -110,6 +112,7 @@ class AgentPrompts:
     """
     
     COMPETITIVE_ANALYSIS_EXPECTED_OUTPUT = """
+    Always prepend start the section with \"Competitive Analysis\"
     1. Competitor Analysis:
        - Major players in {industry}
        - Market share distribution
@@ -222,7 +225,7 @@ class AgentPrompts:
        - Funding requirements
        - Key metrics and milestones
 
-    5. Implementation Strategy
+    5. Implementation Plan
        - Detailed timeline
        - Resource requirements
        - Key partnerships
@@ -379,3 +382,107 @@ Activate secondary suppliers in case of disruptions. Pivot to alternative eco-ma
 Monthly KPI reviews with dashboards tracking client acquisition, production metrics, and environmental impact.
          </EXAMPLE>
 """
+
+    EXECUTIVE_SUMMARY_TASK = """
+    Create an EXECUTIVE SUMMARY for {business_idea} in the {industry} industry:
+    - Synthesize key findings from market research, financial analysis, and competitive analysis
+    - Highlight the unique value proposition and market opportunity
+    - Summarize growth potential and financial projections
+    - Outline key success factors and risk mitigation strategies
+    - Output should start with header \"Executive Summary\"
+    """
+
+    EXECUTIVE_SUMMARY_EXPECTED_OUTPUT = """
+    Always start the section with \"Executive Summary\"
+
+    Expected structure:
+    Executive Summary
+    1. Business Overview
+       - Core business concept
+       - Target market and industry
+       - Unique value proposition
+
+    2. Market Opportunity
+       - Market size and growth potential
+       - Target customer segments
+       - Key market trends
+
+    3. Financial Highlights
+       - Investment requirements
+       - Revenue projections
+       - Profitability timeline
+       - Key financial metrics
+
+    4. Competitive Advantage
+       - Key differentiators
+       - Market positioning
+       - Barriers to entry
+
+    5. Implementation Plan
+       - Key milestones
+       - Growth strategy
+       - Risk management approach
+    """
+
+    IMPLEMENTATION_PLAN_TASK = """
+    Create a DETAILED IMPLEMENTATION PLAN ONLY that includes:
+
+    1. Implementation Timeline for {timeline}:
+       - Specific milestones and deadlines
+       - Key activities for each month
+       - Resource requirements timing
+
+    2. Detailed Action Steps:
+       - Pre-launch activities (permits, equipment, hiring)
+       - Launch phase activities
+       - Post-launch operations
+       - Each step should have specific time-frames
+
+    3. Resource Deployment Schedule:
+       - When to hire staff
+       - When to purchase equipment
+       - When to secure vendors
+       - When to begin marketing activities
+
+    4. Implementation Milestones:
+       - Regulatory approvals
+       - Facility setup
+       - Staff training
+       - Product testing
+       - Marketing campaign launches
+       - Sales targets by month
+
+    Format the output as a detailed timeline with specific dates and actions.
+    Focus ONLY on HOW and WHEN to implement the business.
+    Start your answer with the EXACT header\"Implementation Plan\"
+    """
+
+    IMPLEMENTATION_PLAN_EXPECTED_OUTPUT = """
+    Always start your answer with the EXACT header \"Implementation Plan\"
+    Expected structure:
+    Implementation Plan
+    1. Implementation Timeline for {timeline}:
+       - Specific milestones and deadlines
+       - Key activities for each month
+       - Resource requirements timing
+
+    2. Detailed Action Steps:
+       - Pre-launch activities (permits, equipment, hiring)
+       - Launch phase activities
+       - Post-launch operations
+       - Each step should have specific time-frames
+
+    3. Resource Deployment Schedule:
+       - When to hire staff
+       - When to purchase equipment
+       - When to secure vendors
+       - When to begin marketing activities
+
+    4. Implementation Milestones:
+       - Regulatory approvals
+       - Facility setup
+       - Staff training
+       - Product testing
+       - Marketing campaign launches
+       - Sales targets by month
+    """

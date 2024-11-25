@@ -31,7 +31,7 @@ class BusinessPlanCrew:
         self.use_examples = use_examples
         self.prompts = AgentPrompts()
 
-        self.api_key = ""
+        self.api_key = "cb86325e02c715e12b7d8439f064e172713f1c40"
 
         self.metrics = {
             "execution_time": 0,
@@ -49,34 +49,67 @@ class BusinessPlanCrew:
         
     def _create_crew(self, input_data: Dict[str, Any]) -> Crew:
         """Create and configure the crew with all necessary agents"""
-        # Create agents
+        # Set context for agents
         self.agent_factory.set_input_data(input_data)
-        agents = [
-            self.agent_factory.create_market_research_agent(),
-            self.agent_factory.create_financial_planner_agent(),
-            self.agent_factory.create_competitive_analyst_agent(),
-        ]
+        
+        # Create agents
+        market_researcher = self.agent_factory.create_market_research_agent()
+        financial_planner = self.agent_factory.create_financial_planner_agent()
+        competitive_analyst = self.agent_factory.create_competitive_analyst_agent()
+        implementation_planner = self.agent_factory.create_implementation_plan_agent()
+        executive_summarizer = self.agent_factory.create_executive_summary_agent()
         aggregator = self.agent_factory.create_business_plan_aggregator_agent()
 
-        # Create tasks with dependencies
+        # Create tasks with explicit dependencies
         market_research = Task(
             description=self.prompts.MARKET_RESEARCH_TASK,
             expected_output=self.prompts.MARKET_RESEARCH_EXPECTED_OUTPUT,
-            agent=agents[0],
+            agent=market_researcher,
             output_file="market_research_output.md"
         )
 
         financial_planning = Task(
             description=self.prompts.FINANCIAL_ANALYSIS_TASK,
             expected_output=self.prompts.FINANCIAL_ANALYSIS_EXPECTED_OUTPUT,
-            agent=agents[1],
+            agent=financial_planner,
+            context=[market_research],
+            output_file="financial_planning_output.md"
         )
 
         competitive_analysis = Task(
             description=self.prompts.COMPETITIVE_ANALYSIS_TASK,
             expected_output=self.prompts.COMPETITIVE_ANALYSIS_EXPECTED_OUTPUT,
-            agent=agents[2],
+            agent=competitive_analyst,
+            context=[market_research, financial_planning],
+            output_file="competitive_analysis_output.md"
         )
+
+        implementation_plan = Task(
+            description=self.prompts.IMPLEMENTATION_PLAN_TASK,
+            expected_output=self.prompts.IMPLEMENTATION_PLAN_EXPECTED_OUTPUT,
+            agent=implementation_planner,
+            context=[market_research, financial_planning, competitive_analysis],
+            output_file="implementation_plan_output.md",
+            max_iter=3  # Limit iterations to ensure completion
+        )
+
+        executive_summary = Task(
+            description=self.prompts.EXECUTIVE_SUMMARY_TASK,
+            expected_output=self.prompts.EXECUTIVE_SUMMARY_EXPECTED_OUTPUT,
+            agent=executive_summarizer,
+            context=[market_research, financial_planning, competitive_analysis],
+            output_file="executive_summary_output.md",
+            max_iter=3  # Limit iterations to ensure completion
+        )
+
+        # implementation_plan = Task(
+        #     description=self.prompts.IMPLEMENTATION_PLAN_TASK,
+        #     expected_output=self.prompts.IMPLEMENTATION_PLAN_EXPECTED_OUTPUT,
+        #     agent=aggregator,
+        #     context=[market_research, financial_planning, competitive_analysis, executive_summary],
+        #     output_file="implementation_plan_output.md",
+        #     max_iter=3  # Limit iterations to ensure completion
+        # )
 
         business_plan = Task(
             description=self.prompts.BUSINESS_PLAN_TASK,
@@ -87,14 +120,19 @@ class BusinessPlanCrew:
             {self.prompts.BUSINESS_PLAN_EXPECTED_OUTPUT}
             ''',
             agent=aggregator,
-            context=[market_research, financial_planning, competitive_analysis]
+            context=[market_research, financial_planning, competitive_analysis, executive_summary, implementation_plan]
         )
 
+        # Create crew with sequential process and planning
         return Crew(
-            agents=agents + [aggregator],
-            tasks=[market_research, financial_planning, competitive_analysis, business_plan],
+            agents=[market_researcher, financial_planner, competitive_analyst, implementation_planner, executive_summarizer, aggregator],
+            tasks=[market_research, financial_planning, competitive_analysis, implementation_plan, executive_summary, business_plan],
             process=Process.sequential,
-            verbose=True
+            verbose=True,
+            memory=False,
+            share_crew=False,
+            planning=False,  # Enable planning to ensure proper task execution
+            max_iter=3  # Limit total iterations
         )
 
     def _update_tasks_with_context(self, tasks: List[Task], context: Dict[str, Any]) -> None:
@@ -168,17 +206,19 @@ class BusinessPlanCrew:
     def _validate_results(self, results: Dict) -> Dict:
         """Validate results and calculate quality metrics"""
         validation_results = BusinessPlanValidator.validate_business_plan(results)
-
+        validator = BusinessPlanValidator()
         for section, data in results.items():
-            quality_result = BusinessPlanValidator.validate_section_quality(
-                section, data["content"]
+            print("Validating section: ", section)
+            print("Data: ", data)
+            quality_result = validator.validate_section_quality(
+                section=section,
+                content=data.get("content", [])
             )
             self.metrics["quality_scores"][section] = quality_result["score"]
             if quality_result["issues"]:
                 self.metrics["warnings"].extend(quality_result["issues"])
 
         return validation_results
-
     def _process_task_result(self, task: Task, task_result: Any, business_plan: Dict) -> None:
         """Process individual task result and update business plan"""
 
@@ -203,15 +243,37 @@ class BusinessPlanCrew:
             processed = self.content_processor.process_competitive_analysis(content)
             business_plan["competitive_analysis"]["content"].append(processed)
             business_plan["competitive_analysis"]["status"] = "complete"
+        elif "Implementation" in role:
+            processed = self.content_processor.process_implementation_plan(content)
+            business_plan["implementation_plan"]["content"].append(processed)
+            business_plan["implementation_plan"]["status"] = "complete"
 
-        elif "Strategy" in role:
+        elif "Executive" in role:
+            processed = self.content_processor.process_executive_summary(content)
+            business_plan["executive_summary"]["content"].append(processed)
+            business_plan["executive_summary"]["status"] = "complete"
+
+        elif "Strategy" in role or "Aggregator" in role:  # Check for both roles
             exec_summary, impl_plan = self._extract_strategic_content(content)
+            
             if exec_summary:
-                business_plan["executive_summary"]["content"].append(exec_summary)
+                processed_summary = self.content_processor.process_executive_summary(exec_summary)
+                business_plan["executive_summary"]["content"].append(processed_summary)
                 business_plan["executive_summary"]["status"] = "complete"
+            
             if impl_plan:
-                business_plan["implementation_plan"]["content"].append(impl_plan)
+                processed_plan = self.content_processor.process_implementation_plan(impl_plan)
+                business_plan["implementation_plan"]["content"].append(processed_plan)
                 business_plan["implementation_plan"]["status"] = "complete"
+            
+            # If no implementation plan found in strategic content, try to extract it directly
+            elif "Implementation Plan" in content:
+                impl_plan = self._extract_section(content, "Implementation Plan", 
+                    ["Conclusion", "Financial Plan", "Executive Summary"])
+                if impl_plan:
+                    processed_plan = self.content_processor.process_implementation_plan(impl_plan)
+                    business_plan["implementation_plan"]["content"].append(processed_plan)
+                    business_plan["implementation_plan"]["status"] = "complete"
 
     def _extract_strategic_content(self, content: str) -> Tuple[str, str]:
         """Extract executive summary and implementation plan from strategic content"""
@@ -306,9 +368,12 @@ class BusinessPlanCrew:
             processed_results = self._process_results(crew, result)
             
             market_analysis = market_analyzer.analyze_market_data(processed_results)
+            if "market_analysis" in processed_results:
+                processed_results["market_analysis"]["content"].append(
+                    "\n\n### Market Intelligence\n" + 
+                    ContentProcessor.format_market_intelligence(market_analysis)
+                )
 
-            processed_results["market_intelligence"] = market_analysis
-            
             validation_results = self._validate_results(processed_results)
             final_document = self.aggregate_results(processed_results)
 
@@ -385,34 +450,34 @@ class BusinessPlanCrew:
             "implementation_plan": ""
         }
 
-        if "Executive Summary" in text:
-            exec_summary = self._extract_section(text, "Executive Summary",
-                                                 ["Business Strategy", "Implementation Plan", "Go-to-Market Plan"])
+        if "executive summary" in text.lower():
+            exec_summary = self._extract_section(text, "executive summary",
+                                                 ["business strategy", "implementation plan", "go-to-market plan"])
             if exec_summary:
                 sections["executive_summary"] = exec_summary
 
 
-        if "Implementation Plan" in text:
-            impl_plan = self._extract_section(text, "Implementation Plan",
-                                              ["Risk Management", "Conclusion", "Financial Plan"])
+        if "implementation plan" in text.lower():
+            impl_plan = self._extract_section(text, "implementation plan",
+                                              ["risk management", "conclusion", "financial plan"])
             if impl_plan:
                 sections["implementation_plan"] = impl_plan
 
-        if "Market Analysis" in text or "Market Size" in text:
-            market = self._extract_section(text, "Market Analysis",
-                                           ["Financial", "Competition", "Implementation"])
+        if "market analysis" in text.lower() or "market size" in text.lower():
+            market = self._extract_section(text, "market analysis",
+                                           ["financial", "competition", "implementation"])
             if market:
                 sections["market_analysis"] = market
 
-        if "Financial" in text or "Revenue" in text:
-            financials = self._extract_section(text, "Financial",
-                                               ["Competition", "Implementation", "Conclusion"])
+        if "financial" in text.lower() or "revenue" in text.lower():
+            financials = self._extract_section(text, "financial",
+                                               ["competition", "implementation", "conclusion"])
             if financials:
                 sections["financial_projections"] = financials
 
-        if "Competition" in text or "Competitor" in text:
-            competition = self._extract_section(text, "Competition",
-                                                ["Implementation", "Financial", "Conclusion"])
+        if "competition" in text.lower() or "competitor" in text.lower():
+            competition = self._extract_section(text, "competition",
+                                                ["implementation", "financial", "conclusion"])
             if competition:
                 sections["competitive_analysis"] = competition
 
@@ -425,12 +490,12 @@ class BusinessPlanCrew:
         in_section = False
 
         for line in lines:
-            if section_start in line:
+            if section_start in line.lower():
                 in_section = True
                 continue
 
             if in_section:
-                if any(end in line for end in section_ends):
+                if any(end in line.lower() for end in section_ends):
                     break
                 content.append(line)
 

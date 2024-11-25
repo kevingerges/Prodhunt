@@ -1,4 +1,4 @@
-from typing import Dict, List
+from typing import Dict, List, Any
 from transformers import pipeline
 import spacy
 from collections import Counter
@@ -31,14 +31,14 @@ class BusinessPlanValidator:
         warnings = []
 
         for section, data in business_plan.items():
-            if data["status"] != "complete":
+            if "status" not in data or data["status"] != "complete":
                 warnings.append(f"Section '{section}' may be incomplete")
-            if not data["content"]:
+            if "content" not in data:
                 warnings.append(f"Section '{section}' has no content")
 
             if section in BusinessPlanValidator.required_sections:
                 missing_keywords = BusinessPlanValidator._check_required_keywords(
-                    data["content"],
+                    data.get("content", []),
                     BusinessPlanValidator.required_sections[section]
                 )
                 if missing_keywords:
@@ -64,14 +64,13 @@ class BusinessPlanValidator:
         """Validate the quality of a specific section with NLP analysis"""
         quality_score = 0
         issues = []
-
         # Check content length
         if not content or not any(content):
             issues.append("Section is empty")
             return {"score": 0, "issues": issues}
 
         content_text = ' '.join(content)
-
+        print("Validating section: ", section, content_text)
         if len(content_text.split()) < 100:
             issues.append("Content may be too brief")
         else:
