@@ -134,11 +134,14 @@ class MarkdownFormatter:
             section_title = section.replace("_", " ").title()
             md_output += f"## {section_title}\n\n"
 
-            if data["status"] == "complete" and data["content"]:
+            if "status" in data and data["status"] == "complete" and "content" in data and data["content"]:
                 md_output += data["content"][0]  # Content is now preprocessed
             else:
-                md_output += "*Section content may be incomplete*\n\n"
-                if data["content"]:
+                if "status" not in data:
+                    md_output += "*Section status is unknown*\n\n"
+                else:
+                    md_output += "*Section content may be incomplete*\n\n"
+                if "content" in data and data["content"]:
                     md_output += data["content"][0]
 
             md_output += "\n\n---\n\n"
@@ -189,20 +192,29 @@ class ContentFormatter:
     @staticmethod
     def integrate_sections(business_plan: Dict, examples: Dict) -> Dict:
         """Integrate sections with better cohesion"""
+        # Initialize structure if missing
+        sections = [
+            "market_analysis", 
+            "financial_projections", 
+            "competitive_analysis",
+            "executive_summary",
+            "implementation_plan"
+        ]
+        
+        enhanced_plan = {}
+        for section in sections:
+            if section not in business_plan:
+                print("Section not found: ", section)
+                business_plan[section] = {"content": [], "status": "pending"}
+            elif not isinstance(business_plan[section], dict):
+                business_plan[section] = {"content": [business_plan[section]], "status": "complete"}
+            elif "content" not in business_plan[section]:
+                business_plan[section]["content"] = []
+        
         enhanced_plan = business_plan.copy()
 
-        if enhanced_plan["market_analysis"]["content"]:
-            enhanced_plan["executive_summary"]["content"].append(
-                "\n\nSee Market Analysis section for detailed market size data."
-            )
-
-        if enhanced_plan["financial_projections"]["content"]:
-            enhanced_plan["implementation_plan"]["content"].append(
-                "\n\nSee Financial Projections section for detailed cost breakdown."
-            )
-
         for section, data in enhanced_plan.items():
-            if data["content"]:
+            if "content" in data and data["content"]:
                 data["content"] = [
                     ContentFormatter._enhance_section_cohesion(
                         data["content"], section, examples

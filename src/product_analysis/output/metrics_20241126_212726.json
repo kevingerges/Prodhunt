@@ -1,0 +1,31 @@
+{
+  "metrics": {
+    "execution_time": "0:07:14.762240",
+    "completion_scores": {},
+    "quality_scores": {
+      "market_analysis": 0.3,
+      "financial_projections": 0.3,
+      "competitive_analysis": 0.3,
+      "executive_summary": 0.3,
+      "implementation_plan": 0.3
+    },
+    "warnings": [
+      "Lacks structured bullet points",
+      "Lacks structured bullet points",
+      "Lacks structured bullet points",
+      "Lacks structured bullet points",
+      "Lacks structured bullet points"
+    ],
+    "market_analysis_confidence": 0.413
+  },
+  "validation": {
+    "is_valid": false,
+    "warnings": [
+      "Section 'competitive_analysis' missing key elements: competitors, positioning, advantages",
+      "Section 'executive_summary' missing key elements: overview, opportunity, value proposition",
+      "Section 'implementation_plan' missing key elements: timeline, milestones, resources"
+    ]
+  },
+  "execution_time": "",
+  "rag_queries": []
+}

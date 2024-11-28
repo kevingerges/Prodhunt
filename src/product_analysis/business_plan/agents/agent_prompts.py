@@ -197,7 +197,7 @@ class AgentPrompts:
 
     Generate a complete business plan with the following structure:
 
-    1. Executive Summary
+    1. Executive Summary (Integrate Executive Summary)
        - Compelling business concept overview
        - Clear value proposition
        - Key market opportunities
@@ -225,7 +225,7 @@ class AgentPrompts:
        - Funding requirements
        - Key metrics and milestones
 
-    5. Implementation Plan
+    5. Implementation Plan (Integrate Implementation Plan)
        - Detailed timeline
        - Resource requirements
        - Key partnerships
@@ -263,123 +263,58 @@ class AgentPrompts:
    <EXAMPLE>
       [Previous example content remains the same...]
    </EXAMPLE>
-      # Business Plan for Sustainable Pack Co.
+# Business Plan for Sustainable Pack Co.
+
+## 1. Executive Summary
+- **Business Concept Overview**: Sustainable Pack Co. provides biodegradable and eco-friendly packaging solutions tailored for e-commerce businesses. Our innovative products aim to reduce environmental impact while offering high-quality and cost-effective alternatives to traditional packaging.
+- **Value Proposition**: By aligning with the growing demand for sustainability, our products enable e-commerce businesses to demonstrate environmental responsibility, attract eco-conscious customers, and comply with green regulations.
+- **Key Market Opportunities**: The U.S. e-commerce packaging industry is valued at $15 billion and growing at 10% annually. Over 60% of businesses indicate a preference for sustainable options if cost-effective.
+- **Financial Highlights**: Initial investment of $500,000 supports product development, production scale-up, and a marketing push, with projected profitability by year two and $3 million revenue by year three.
+- **Implementation Roadmap**: Launch within six months with a phased rollout—initially targeting high-demand states like California and New York.
 
 ---
 
-## Executive Summary
-
-**Business Concept Overview**  
-Sustainable Pack Co. is a national B2B company providing fully compostable, biodegradable, and recyclable packaging solutions for e-commerce businesses. We aim to reduce plastic waste in e-commerce, offering customized, environmentally friendly packaging that supports brands in meeting regulatory and consumer demands for sustainability.
-
-**Market Opportunity**  
-The U.S. e-commerce packaging market is growing at an annual rate of 6.5%, with a significant increase in demand for sustainable alternatives. Studies show that 74% of consumers prefer to purchase from brands with eco-friendly practices. Our market analysis identifies a major gap in affordable, customizable sustainable packaging for small to medium-sized online retailers.
-
-**Value Proposition**  
-Sustainable Pack Co. offers eco-friendly packaging solutions tailored to each client’s branding needs, helping them reduce environmental impact, comply with emerging regulations, and attract eco-conscious customers. Our product range includes compostable mailers, recyclable boxes, and padded envelopes.
-
-**Financial Projections**  
-- Initial Investment: $500,000
-- Projected Revenue (Year 1): $1.2 million
-- Gross Profit Margin (Year 1): 45%
-- Projected Break-Even: 12 months
-- Year 2 Revenue Projection: $2.4 million
-
-**Implementation Plan**  
-- Phase 1: Product development and supplier partnerships (Months 1-3)
-- Phase 2: Pilot launch with select e-commerce clients (Months 4-6)
-- Phase 3: National rollout and brand partnerships (Months 7-12)
+## 2. Market Analysis
+- **Market Size and Trends**: The biodegradable packaging market is growing at 13% annually, fueled by increasing regulatory pressure and consumer demand for sustainable practices.
+- **Customer Segmentation**: Focused on small to medium-sized e-commerce businesses with revenue between $1M–$20M, operating in eco-conscious sectors like food delivery and apparel.
+- **Market Drivers**: Rising environmental regulations (e.g., California’s SB 54), consumer advocacy for sustainable brands, and increasing costs of waste disposal for businesses.
+- **Growth Potential**: Sustainable Pack Co. aims to capture 5% of the $15B packaging market within five years.
+- **Entry Timing Rationale**: Strategic entry during peak regulatory transitions offers first-mover advantage and market share growth.
 
 ---
 
-## Business Strategy
-
-**Operating Model**  
-Sustainable Pack Co. operates a B2B model, selling eco-friendly packaging solutions to e-commerce businesses across the U.S. Our structure includes sourcing biodegradable materials, customizing products for branding, and distributing via a streamlined logistics network. We will maintain high standards of quality control and compliance with environmental regulations.
-
-**Revenue Model**  
-- Subscription-Based Model: Monthly or quarterly packaging supply subscriptions based on order volume.
-- Bulk Purchase Options: One-time bulk orders with discounts to encourage higher volumes.
-- Custom Branding Add-ons: Additional charges for custom branding and design elements.
-
-**Growth Strategy**  
-We plan to achieve 40% year-over-year growth by expanding our product line, forming strategic partnerships with eco-focused brands, and leveraging digital marketing campaigns. Expansion will target diverse e-commerce industries, including fashion, beauty, and artisanal goods.
-
-**Scaling Approach**  
-Initial focus is on small and medium-sized businesses. After establishing a strong market presence, we will scale operations to serve larger retailers by automating production, expanding manufacturing capacity, and streamlining distribution.
-
-**Core Competencies**  
-Sustainable Pack Co.'s strengths include expertise in eco-material sourcing, robust supplier partnerships, and flexible customization capabilities, all of which set us apart in the packaging industry.
+## 3. Competitive Strategy
+- **Competitive Landscape**: Competitors include large corporations like International Paper and small innovators like GreenWrap. Current gaps include affordable biodegradable packaging for SMEs.
+- **Positioning Strategy**: Emphasize affordability and ease of adoption for SMEs, offering subscription models and bulk discounts.
+- **Competitive Advantages**: Proprietary blend of biodegradable materials reduces production costs by 15% compared to competitors. High adaptability for branding and customization enhances value.
+- **Market Entry Approach**: Start with regional campaigns targeting eco-conscious markets, then expand nationally.
+- **Differentiation Factors**: Patented materials technology, integration with e-commerce platforms for automated packaging recommendations, and sustainable branding consultancy.
 
 ---
 
-## Go-to-Market Plan
-
-**Market Entry Strategy**  
-Our initial entry focuses on eco-conscious small and medium-sized e-commerce brands, especially those in apparel and cosmetics. We will introduce the product through direct outreach, free samples, and partnerships with industry-specific platforms.
-
-**Marketing Approach**  
-We’ll use targeted social media campaigns, partnerships with environmental influencers, and a content marketing strategy that highlights our environmental impact. Additionally, we will leverage case studies and testimonials to build credibility.
-
-**Sales Channels**  
-Our main sales channel will be our website, featuring a user-friendly ordering and customization platform. We will also have a dedicated sales team for larger accounts and strategic partnerships with eco-focused online platforms.
-
-**Customer Acquisition Strategy**  
-To acquire new clients, we will offer first-order discounts and free samples for bulk orders. We’ll also participate in trade shows like the Sustainable Packaging Expo to reach high-quality leads.
-
-**Partnership Strategy**  
-Key partnerships will include eco-friendly organizations (e.g., 1% for the Planet), e-commerce platforms, and fulfillment centers. Collaborations with suppliers will enhance product consistency and cost-effectiveness.
+## 4. Financial Plan
+- **Startup Costs**: $500,000 covers product development ($150,000), marketing ($100,000), equipment procurement ($200,000), and initial staffing ($50,000).
+- **Revenue Projections**: $1M revenue in year one, scaling to $3M by year three through customer acquisition and product diversification.
+- **Profitability Analysis**: Break-even projected within 18 months. Net profit margins of 20% achieved by year three.
+- **Funding Requirements**: $500,000 investment split into equity (70%) and convertible debt (30%).
+- **Key Metrics and Milestones**: 100 clients by month six; 10% month-over-month growth in revenue after launch.
 
 ---
 
-## Implementation Plan
+## 5. Implementation Plan
+- **Detailed Timeline**:
+  - **Months 1–2**: Finalize product design, acquire equipment, hire staff.
+  - **Month 3**: Pilot production and testing.
+  - **Months 4–5**: Marketing launch, secure distribution channels.
+  - **Month 6**: National rollout.
+- **Resource Requirements**: Skilled labor, patented material supply chains, and advanced manufacturing facilities.
+- **Key Partnerships**: Collaborations with logistics providers (e.g., FedEx, UPS) to integrate sustainable packaging in their services, and partnerships with e-commerce platforms like Shopify for product visibility.
+- **Risk Mitigation**:
+  - **Regulatory Risks**: Monitor evolving sustainability regulations to ensure compliance.
+  - **Supply Chain Risks**: Establish multiple suppliers for key materials to reduce dependency.
+  - **Market Adoption Risks**: Conduct market education campaigns to highlight the cost-benefit of sustainable packaging.
+- **Success Metrics**: Customer retention rate of 90%, revenue milestone achievement within projected timelines, and reduction of production waste by 20% within the first year.
 
-**Key Milestones**  
-- Months 1-3: Finalize supplier contracts, complete product development, and build the initial product line.
-- Months 4-6: Launch pilot program, gather client feedback, and optimize logistics.
-- Months 7-12: National rollout, initiate marketing campaigns, and secure partnerships with five major sustainable brands.
-
-**Resource Requirements**  
-- Personnel: Sales team, marketing specialists, supply chain manager, and quality control.
-- Facilities: 10,000 sq. ft. warehouse for distribution.
-- Technology: E-commerce platform for managing subscriptions, orders, and customization.
-
-**Timeline and Phases**  
-The first year will focus on establishing product-market fit, followed by a phased rollout to scale operations nationally.
-
-**Operational Setup**  
-We will partner with certified suppliers for sustainable materials and reliable fulfillment centers. Quality assurance will be integral to our operational process, with regular checks to ensure material consistency.
-
-**Team Structure**  
-- CEO: Experienced in packaging and sustainability.
-- VP of Sales: Oversee client acquisition and strategic partnerships.
-- Marketing Director: Lead branding and awareness campaigns.
-- Supply Chain Manager: Ensure product availability and quality standards.
-
----
-
-## Risk Management
-
-**Key Risks Identification**  
-1. Supply Chain Disruptions: Shortages in biodegradable materials.
-2. Regulatory Changes: Compliance challenges with evolving environmental standards.
-3. Competitive Market: Increasing competition in sustainable packaging.
-
-**Mitigation Strategies**  
-- Supply Chain: Establish alternative suppliers to mitigate dependency.
-- Regulations: Regularly consult legal advisors and stay updated on industry regulations.
-- Competition: Differentiate with flexible customization and targeted marketing to build customer loyalty.
-
-**Success Metrics**  
-- Customer Acquisition: Target 50 new B2B clients by end of Year 1.
-- Renewal Rate: 75% subscription renewal.
-- Environmental Impact: Achieve 20,000 pounds of plastic reduction by end of Year 1.
-
-**Contingency Plans**  
-Activate secondary suppliers in case of disruptions. Pivot to alternative eco-materials if primary materials become scarce or costly.
-
-**Monitoring Approach**  
-Monthly KPI reviews with dashboards tracking client acquisition, production metrics, and environmental impact.
          </EXAMPLE>
 """
 
@@ -393,10 +328,10 @@ Monthly KPI reviews with dashboards tracking client acquisition, production metr
     """
 
     EXECUTIVE_SUMMARY_EXPECTED_OUTPUT = """
-    Always start the section with \"Executive Summary\"
+    Always start the section with \"**Executive Summary**\"
 
     Expected structure:
-    Executive Summary
+    **Executive Summary**
     1. Business Overview
        - Core business concept
        - Target market and industry
@@ -458,9 +393,9 @@ Monthly KPI reviews with dashboards tracking client acquisition, production metr
     """
 
     IMPLEMENTATION_PLAN_EXPECTED_OUTPUT = """
-    Always start your answer with the EXACT header \"Implementation Plan\"
+    Always start your answer with the EXACT header \"**Implementation Plan**\"
     Expected structure:
-    Implementation Plan
+    **Implementation Plan**
     1. Implementation Timeline for {timeline}:
        - Specific milestones and deadlines
        - Key activities for each month
